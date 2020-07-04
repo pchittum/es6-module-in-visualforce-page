@@ -1,0 +1,39 @@
+<apex:page docType="html-5.0">
+
+    <apex:remoteObjects>
+        <apex:remoteObjectModel
+            name="Contact"
+            fields="Id, Name, Title, Phone, Email"
+        />
+    </apex:remoteObjects>
+
+    <div class="controls">
+        <button id="reload" type="button">Reload</button>
+      </div>
+      
+      <div class="event-log">
+        <label>Event log:</label>
+        <textarea readonly="" class="event-log-contents" rows="8" cols="30"></textarea>
+      </div>
+      
+<!-- 
+  After trying a few other ways and not really finding any good recommendations
+  in online help forums or documentation, this seems like the most straightforward 
+  way to load an ES6 module in a VF page where you need to pass in VF page global 
+  variables and other objects use them in the module. 
+
+  This work went into the structure for the LWC recipes involving lightning message
+  service. 
+-->
+
+      <script type="module">
+        import { setConfigs, getConfigs } from '{!URLFOR($Resource.test, 'test.js')}';
+        setConfigs({
+            contactModel: SObjectModel.Contact, 
+            user: '{!$User.Username}', 
+            lmsSubscribe: sforce.one.subscribe
+        });
+
+        console.dir(getConfigs());
+      </script>
+</apex:page>
